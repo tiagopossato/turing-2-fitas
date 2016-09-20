@@ -23,9 +23,6 @@
 					<div class="col-sm-5">
 						<input type="file" id="txtfiletoread" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  btn btn-success" />
 					</div>
-					<div class="col-sm-3">
-						<button type="button" id="exemplo" class="btn btn-small btn-outline-info">Exemplo</button>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -103,36 +100,23 @@
 					var fileReader = new FileReader();
 
 					fileReader.onload = function(e) {
-						var dados = fileReader.result;
-						// console.log(dados);
-						maquinaDeTuring = JSON.parse(dados);
-
-						var valida = true;
-						if (maquinaDeTuring.alfabetoInicial === undefined) {
-							alert("Faltando alfabetoInicial");
-							valida = false;
-						}
-
-						if (maquinaDeTuring.alfabetoFinal === undefined) {
-							alert("Faltando alfabetoFinal");
-							valida = false;
-						}
-
-						if (maquinaDeTuring.simboloVazio === undefined) {
-							alert("Faltando simboloVazio");
-							valida = false;
-						}
-						if (maquinaDeTuring.estados === undefined) {
-							alert("Faltando estados");
-							valida = false;
-						}
-						if (maquinaDeTuring.estadoInicial === undefined) {
-							alert("Faltando estadoInicial");
-							valida = false;
-						}
-						if (!valida) return;
-
-						mostraMaquina();
+						var xml = fileReader.result;
+						//console.log(xml);
+						$(xml).find('block').each(function() {
+							console.log($(this).attr("id"));
+							console.log($(this).attr("name"));
+							if($(this).find('initial')[0]) console.log("Inicial");
+							if($(this).find('final')[0]) console.log("Final");
+						});
+						
+						$(xml).find('block').each(function() {
+							console.log($(this).attr("id"));
+							console.log($(this).attr("name"));
+							if($(this).find('initial')[0]) console.log("Inicial");
+							if($(this).find('final')[0]) console.log("Final");
+						});
+						
+						//mostraMaquina();
 					};
 					fileReader.readAsText(fileTobeRead);
 				}, false);
@@ -147,41 +131,6 @@
 			return str.substr(0, index) + chr + str.substr(index + 1);
 		}
 
-		$("#exemplo").click(function(e) {
-			var blob = new Blob([
-				"{\n " +
-				"\t\"alfabetoInicial\":[\"1\",\"w\"],\n" +
-				"\t\"alfabetoFinal\":[\"1\",\"w\"],\n" +
-				"\t\"simboloVazio\":\"*\",\n" +
-				"\t\"estados\":[\n" +
-				"\t\t{\"q\":0,\"transicoes\":[\n" +
-				"\t\t\t\t{\"proximoEstado\":\"0\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"1\",\"movimento\":\"1\"},\n" +
-				"\t\t\t\t{\"proximoEstado\":\"1\",\"lidoNaFita\":\"w\",\"escritoNaFita\":\"w\",\"movimento\":\"1\"}\n" +
-				"\t\t\t]\n" +
-				"\t\t},\n" +
-				"\t\t{\"q\":1,\"transicoes\":[\n" +
-				"\t\t\t\t{\"proximoEstado\":\"1\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"1\",\"movimento\":\"1\"},\n" +
-				"\t\t\t\t{\"proximoEstado\":\"2\",\"lidoNaFita\":\"*\",\"escritoNaFita\":\"*\",\"movimento\":\"-1\"}\n" +
-				"\t\t\t]\n" +
-				"\t\t},\n" +
-				"\t\t\t{\"q\":2,\"transicoes\":[\n" +
-				"\t\t\t\t{\"proximoEstado\":\"2\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"*\",\"movimento\":\"-1\"},\n" +
-				"\t\t\t\t{\"proximoEstado\":\"3\",\"lidoNaFita\":\"w\",\"escritoNaFita\":\"w\",\"movimento\":\"1\"}\n" +
-				"\t\t\t]\n" +
-				"\t\t},\n" +
-				"\t\t{\"q\":3,\"transicoes\":[],\n" +
-				"\t\t\t\"estadoFinal\":true\n" +
-				"\t\t}\n" +
-				"\t],\n" +
-				"\t\"estadoInicial\":0\n" +
-				"}\n"
-			], {
-				type: "text/plain;charset=utf-8"
-			});
-
-			saveAs(blob, "Exemplo maquina de Turing.txt");
-
-		});
 		$("#maquina").hide();
 		$("#entrada").hide();
 		$("#saida").hide();
