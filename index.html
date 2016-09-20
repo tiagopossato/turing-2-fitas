@@ -105,17 +105,37 @@
 						$(xml).find('block').each(function() {
 							console.log($(this).attr("id"));
 							console.log($(this).attr("name"));
-							if($(this).find('initial')[0]) console.log("Inicial");
-							if($(this).find('final')[0]) console.log("Final");
+							if ($(this).find('initial')[0]) console.log("Inicial");
+							if ($(this).find('final')[0]) console.log("Final");
 						});
-						
-						$(xml).find('block').each(function() {
-							console.log($(this).attr("id"));
-							console.log($(this).attr("name"));
-							if($(this).find('initial')[0]) console.log("Inicial");
-							if($(this).find('final')[0]) console.log("Final");
+
+						$(xml).find('transition').each(function() {
+							/*
+							<from>0</from>&#13;
+							<to>0</to>&#13;
+							<read tape="1">1</read>&#13;
+							<write tape="1">1</write>&#13;
+							<move tape="1">R</move>&#13;
+							<read tape="2"/>&#13;
+							<write tape="2">1</write>&#13;
+							<move tape="2">R</move>&#13;
+							*/
+							console.log('from: ' + $(this).find("from").text());
+							console.log('to: ' + $(this).find("to").text());
+							$(this).find("read").each(function() {
+								if ($(this).attr("tape") === '1') console.log('1');
+								if ($(this).attr("tape") === '2') console.log('2');
+							});
+							$(this).find("write").each(function() {
+								if ($(this).attr("tape") === '1') console.log('1');
+								if ($(this).attr("tape") === '2') console.log('2');
+							});
+							$(this).find("move").each(function() {
+								if ($(this).attr("tape") === '1') console.log('1');
+								if ($(this).attr("tape") === '2') console.log('2');
+							});
 						});
-						
+
 						//mostraMaquina();
 					};
 					fileReader.readAsText(fileTobeRead);
