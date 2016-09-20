@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Maquina de Turing</title>
+	<!-- Bootstrap -->
+	<link href="assets/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="panel panel-default">
+
+		<div class="panel-body">
+			<div class="row ">
+
+				<div class="container-fluid">
+				</div>
+				<div class="row">
+					<label for="txtfiletoread" class="col-sm-4 control-label">Arquivo com a Máquina de Turing</label>
+					<div class="col-sm-5">
+						<input type="file" id="txtfiletoread" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  btn btn-success" />
+					</div>
+					<div class="col-sm-3">
+						<button type="button" id="exemplo" class="btn btn-small btn-outline-info">Exemplo</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+
+				<div class="row col-xs-6 col-sm-6 col-md-6 col-lg-6" id="maquina">
+					<strong>Conjunto de Estados</strong>
+					<div id="conjuntoEstados"></div>
+					<strong>Alfabeto de Entrada</strong>
+					<div id="alfabetoEntrada"></div>
+					<strong>Alfabeto da Fita</strong>
+					<div id="alfabetoDaFita"></div>
+					<strong>Função de Transicao</strong>
+					<div id="funcaoTransicao"></div>
+					<strong>Estado Inicial</strong>
+					<div id="estadoInicial"></div>
+					<strong>Símbolo Vazio</strong>
+					<div id="branco"></div>
+					<strong>Conjunto de Estados Finais</strong>
+					<div id="estadosFinais"></div>
+				</div>
+
+				<div id="entrada" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					<div class="row">
+						<label for="alfabetoNaFita" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">Alfabeto na fita</label>
+						<input type="text" class="form-control" id="alfabetoNaFita" name="alfabetoNaFita">
+						<button type="button" id="botaoCalcular" class="col-sm-3 btn btn-lg btn-warning">Calular</button>
+					</div>
+				</div>
+				<hr>
+
+				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="saida">
+					<h3><strong><div id="resultado"></div></strong></h3>
+					<label for="fitaCalculada" class="col-xs-6 col-sm-6 col-md-6 col-lg-6  control-label">Fita após a execução</label>
+					<input type="text" class="form-control" id="fitaCalculada" name="fitaCalculada" disabled="">
+				</div>
+			</div>
+		</div>
+		<div class="panel-footer">Tiago Possato - 2016</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="assets/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script type="text/javascript" src="assets/bootstrap.min.js"></script>
+	<script type="text/javascript" src="assets/FileSaver.min.js"></script>
+
+	<script type="text/javascript">
+		/*global maquinaDeTuring*/
+		/*global calculaMaquina*/
+		/*global mostraMaquina*/
+		/*global $*/
+
+		$("#botaoCalcular").click(function(e) {
+			maquinaDeTuring.alfabetoNaFita = String($("#alfabetoNaFita").val());
+			maquinaDeTuring.alfabetoNaFita += maquinaDeTuring.simboloVazio;
+			calculaMaquina(maquinaDeTuring);
+		});
+
+		$(window).load(function() {
+			maquinaDeTuring = new MaquinaDeTuring();
+
+			//Check the support for the File API support
+			if (window.File && window.FileReader && window.FileList && window.Blob) {
+				var fileSelected = document.getElementById('txtfiletoread');
+
+				fileSelected.addEventListener('change', function(e) {
+					$("#maquina").hide('slow');
+					$("#entrada").hide('slow');
+					$("#saida").hide('slow');
+					//Get the file object
+					var fileTobeRead = fileSelected.files[0];
+					//Initialize the FileReader object to read the file
+					var fileReader = new FileReader();
+
+					fileReader.onload = function(e) {
+						var dados = fileReader.result;
+						// console.log(dados);
+						maquinaDeTuring = JSON.parse(dados);
+
+						var valida = true;
+						if (maquinaDeTuring.alfabetoInicial === undefined) {
+							alert("Faltando alfabetoInicial");
+							valida = false;
+						}
+
+						if (maquinaDeTuring.alfabetoFinal === undefined) {
+							alert("Faltando alfabetoFinal");
+							valida = false;
+						}
+
+						if (maquinaDeTuring.simboloVazio === undefined) {
+							alert("Faltando simboloVazio");
+							valida = false;
+						}
+						if (maquinaDeTuring.estados === undefined) {
+							alert("Faltando estados");
+							valida = false;
+						}
+						if (maquinaDeTuring.estadoInicial === undefined) {
+							alert("Faltando estadoInicial");
+							valida = false;
+						}
+						if (!valida) return;
+
+						mostraMaquina();
+					};
+					fileReader.readAsText(fileTobeRead);
+				}, false);
+			}
+			else {
+				alert("Arquivo(s) não suportado(s)");
+			}
+		});
+
+		function setCharAt(str, index, chr) {
+			if (index > str.length - 1) return str;
+			return str.substr(0, index) + chr + str.substr(index + 1);
+		}
+
+		$("#exemplo").click(function(e) {
+			var blob = new Blob([
+				"{\n " +
+				"\t\"alfabetoInicial\":[\"1\",\"w\"],\n" +
+				"\t\"alfabetoFinal\":[\"1\",\"w\"],\n" +
+				"\t\"simboloVazio\":\"*\",\n" +
+				"\t\"estados\":[\n" +
+				"\t\t{\"q\":0,\"transicoes\":[\n" +
+				"\t\t\t\t{\"proximoEstado\":\"0\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"1\",\"movimento\":\"1\"},\n" +
+				"\t\t\t\t{\"proximoEstado\":\"1\",\"lidoNaFita\":\"w\",\"escritoNaFita\":\"w\",\"movimento\":\"1\"}\n" +
+				"\t\t\t]\n" +
+				"\t\t},\n" +
+				"\t\t{\"q\":1,\"transicoes\":[\n" +
+				"\t\t\t\t{\"proximoEstado\":\"1\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"1\",\"movimento\":\"1\"},\n" +
+				"\t\t\t\t{\"proximoEstado\":\"2\",\"lidoNaFita\":\"*\",\"escritoNaFita\":\"*\",\"movimento\":\"-1\"}\n" +
+				"\t\t\t]\n" +
+				"\t\t},\n" +
+				"\t\t\t{\"q\":2,\"transicoes\":[\n" +
+				"\t\t\t\t{\"proximoEstado\":\"2\",\"lidoNaFita\":\"1\",\"escritoNaFita\":\"*\",\"movimento\":\"-1\"},\n" +
+				"\t\t\t\t{\"proximoEstado\":\"3\",\"lidoNaFita\":\"w\",\"escritoNaFita\":\"w\",\"movimento\":\"1\"}\n" +
+				"\t\t\t]\n" +
+				"\t\t},\n" +
+				"\t\t{\"q\":3,\"transicoes\":[],\n" +
+				"\t\t\t\"estadoFinal\":true\n" +
+				"\t\t}\n" +
+				"\t],\n" +
+				"\t\"estadoInicial\":0\n" +
+				"}\n"
+			], {
+				type: "text/plain;charset=utf-8"
+			});
+
+			saveAs(blob, "Exemplo maquina de Turing.txt");
+
+		});
+		$("#maquina").hide();
+		$("#entrada").hide();
+		$("#saida").hide();
+	</script>
+	<script type="text/javascript" src="assets/maquina-turing.js"></script>
+
+</body>
+
+</html>
