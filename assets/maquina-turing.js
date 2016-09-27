@@ -43,21 +43,21 @@ function Estado(_q, _nome) {
 
 function Transicao() {
     var proximoEstado;
-    
+
     var lidoNaFitaF1;
     var escritoNaFitaF1;
     var movimentoF1;
-    
+
     var lidoNaFitaF2;
     var escritoNaFitaF2;
     var movimentoF2;
 
     this.proximoEstado = 0;
-    
+
     this.lidoNaFitaF1 = null;
     this.escritoNaFitaF1 = null;
     this.movimentoF1 = 0;
-    
+
     this.lidoNaFitaF2 = null;
     this.escritoNaFitaF2 = null;
     this.movimentoF2 = 0;
@@ -115,7 +115,7 @@ var calculaMaquina = function(mq) {
 var mostraMaquina = function() {
 
     console.log(maquinaDeTuring);
-$("#maquina").show('slow');
+    $("#maquina").show('slow');
     var trs = "";
     var ests = "<strong>Q</strong>={";
     var finais = "<strong>F</strong>={";
@@ -125,21 +125,11 @@ $("#maquina").show('slow');
         if (maquinaDeTuring.estados[i].estadoFinal) finais += "q" + i + ", ";
 
         for (var j = 0; j < maquinaDeTuring.estados[i].transicoes.length; j++) {
-            trs += "\t&nbsp;&nbsp;&nbsp;&nbsp;<strong>&delta;</strong>(q" + i + ", \'" + maquinaDeTuring.estados[i].transicoes[j].lidoNaFita + "\') = ";
+            trs += "\t&nbsp;&nbsp;&nbsp;&nbsp;<strong>&delta;</strong>(q" + i + ", \'" + maquinaDeTuring.estados[i].transicoes[j].lidoNaFitaF1 + "\'  |  \'"+ maquinaDeTuring.estados[i].transicoes[j].lidoNaFitaF2+"\') = ";
             trs += "(q" + maquinaDeTuring.estados[i].transicoes[j].proximoEstado + ", \'" +
-                maquinaDeTuring.estados[i].transicoes[j].escritoNaFita +
-                "\' , ";
-            switch (parseInt(maquinaDeTuring.estados[i].transicoes[j].movimento)) {
-                case -1:
-                    trs += "L)\n</br>";
-                    break;
-                case 0:
-                    trs += "S)\n</br>";
-                    break;
-                case 1:
-                    trs += "R)\n</br>";
-                    break;
-            }
+                maquinaDeTuring.estados[i].transicoes[j].escritoNaFitaF1 +
+                "\'  |  \'"+ maquinaDeTuring.estados[i].transicoes[j].escritoNaFitaF2+ "\', ";
+                trs += maquinaDeTuring.estados[i].transicoes[j].movimentoF1 + "  |  " +maquinaDeTuring.estados[i].transicoes[j].movimentoF1 +")\n</br>";
         }
     }
 
@@ -157,5 +147,5 @@ $("#maquina").show('slow');
     $("#estadosFinais").html(finais);
 
     $("#entrada").show('slow');
-    
+
 };
