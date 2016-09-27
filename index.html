@@ -70,6 +70,7 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script type="text/javascript" src="assets/bootstrap.min.js"></script>
 	<script type="text/javascript" src="assets/FileSaver.min.js"></script>
+	<script type="text/javascript" src="assets/maquina-turing.js"></script>
 
 	<script type="text/javascript">
 		/*global maquinaDeTuring*/
@@ -85,7 +86,6 @@
 
 		$(window).load(function() {
 			maquinaDeTuring = new MaquinaDeTuring();
-
 			//Check the support for the File API support
 			if (window.File && window.FileReader && window.FileList && window.Blob) {
 				var fileSelected = document.getElementById('txtfiletoread');
@@ -103,10 +103,10 @@
 						var xml = fileReader.result;
 						//console.log(xml);
 						$(xml).find('block').each(function() {
-							console.log($(this).attr("id"));
-							console.log($(this).attr("name"));
-							if ($(this).find('initial')[0]) console.log("Inicial");
-							if ($(this).find('final')[0]) console.log("Final");
+							var estado = new Estado($(this).attr("id"), $(this).attr("name"));
+							if ($(this).find('initial')[0]) estado.estadoInicial = true;
+							if ($(this).find('final')[0]) estado.estadoFinal = true;
+							maquinaDeTuring.estados.push(estado);
 						});
 
 						$(xml).find('transition').each(function() {
@@ -120,20 +120,38 @@
 							<write tape="2">1</write>&#13;
 							<move tape="2">R</move>&#13;
 							*/
-							console.log('from: ' + $(this).find("from").text());
-							console.log('to: ' + $(this).find("to").text());
+							var transicao = new Transicao();
+							transicao.proximoEstado = $(this).find("to").text();
+
 							$(this).find("read").each(function() {
-								if ($(this).attr("tape") === '1') console.log('1');
-								if ($(this).attr("tape") === '2') console.log('2');
+								if ($(this).attr("tape") === '1') {
+									transicao.lidoNaFitaF1 = $(this).text();
+								}
+								if ($(this).attr("tape") === '2') {
+									transicao.lidoNaFitaF2 = $(this).text();
+								}
 							});
+
 							$(this).find("write").each(function() {
-								if ($(this).attr("tape") === '1') console.log('1');
-								if ($(this).attr("tape") === '2') console.log('2');
+								if ($(this).attr("tape") === '1') {
+									transicao.escritoNaFitaF1 = $(this).text();
+								}
+								if ($(this).attr("tape") === '2') {
+									transicao.escritoNaFitaF2 = $(this).text();
+								}
 							});
+
 							$(this).find("move").each(function() {
-								if ($(this).attr("tape") === '1') console.log('1');
-								if ($(this).attr("tape") === '2') console.log('2');
+								if ($(this).attr("tape") === '1') {
+									transicao.movimentoF1 = $(this).text();
+								}
+								if ($(this).attr("tape") === '2') {
+									transicao.movimentoF2 = $(this).text();
+								}
 							});
+
+							maquinaDeTuring.estados[buscaEstado($(this).find("from").text())].transicoes.push(transicao);
+
 						});
 
 						//mostraMaquina();
@@ -146,6 +164,16 @@
 			}
 		});
 
+		/**
+		 * Busca posicao do estado pelo q 
+		 */
+		function buscaEstado(q) {
+			for (let i = 0; i < maquinaDeTuring.estados.length; i++) {
+				if (maquinaDeTuring.estados[i].q === q) return i;
+			}
+			return -1;
+		}
+
 		function setCharAt(str, index, chr) {
 			if (index > str.length - 1) return str;
 			return str.substr(0, index) + chr + str.substr(index + 1);
@@ -155,7 +183,7 @@
 		$("#entrada").hide();
 		$("#saida").hide();
 	</script>
-	<script type="text/javascript" src="assets/maquina-turing.js"></script>
+
 
 </body>
 

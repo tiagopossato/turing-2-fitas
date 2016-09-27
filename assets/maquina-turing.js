@@ -17,32 +17,53 @@ function MaquinaDeTuring() {
 
 };
 
-function Estado(_q) {
+function Estado(_q, _nome) {
     var q;
+    var nome;
     var transicoes;
     var estadoFinal;
+    var estadoInicial;
 
     this.q = _q;
+    this.nome = _nome;
     this.transicoes = [];
     this.estadoFinal = false;
+    this.estadoInicial = false;
 
 };
+
+// <from>0</from>;
+// <to>0</to>;
+// <read tape="1">1</read>;
+// <write tape="1">1</write>;
+// <move tape="1">R</move>;
+// <read tape="2"/>;
+// <write tape="2">1</write>;
+// <move tape="2">R</move>;
 
 function Transicao() {
     var proximoEstado;
-    var lidoNaFita;
-    var escritoNaFita;
-    var movimento;
+    
+    var lidoNaFitaF1;
+    var escritoNaFitaF1;
+    var movimentoF1;
+    
+    var lidoNaFitaF2;
+    var escritoNaFitaF2;
+    var movimentoF2;
 
     this.proximoEstado = 0;
-    this.lidoNaFita = null;
-    this.escritoNaFita = null;
-    this.movimento = 0;
-
+    
+    this.lidoNaFitaF1 = null;
+    this.escritoNaFitaF1 = null;
+    this.movimentoF1 = 0;
+    
+    this.lidoNaFitaF2 = null;
+    this.escritoNaFitaF2 = null;
+    this.movimentoF2 = 0;
 };
 
 var maquinaDeTuring;
-
 var calculaMaquina = function(mq) {
     var cabecote = 0;
     var estadoAtual = mq.estadoInicial;
