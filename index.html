@@ -49,8 +49,10 @@
 
 				<div id="entrada" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 					<div class="row">
-						<label for="alfabetoNaFita" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">Alfabeto na fita</label>
-						<input type="text" class="form-control" id="alfabetoNaFita" name="alfabetoNaFita">
+						<label for="alfabetoNaFitaF1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">Alfabeto na fita F!</label>
+						<input type="text" class="form-control" id="alfabetoNaFitaF1" name="alfabetoNaFitaF1">
+						<label for="alfabetoNaFitaF2" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">Alfabeto na fita F2</label>
+						<input type="text" class="form-control" id="alfabetoNaFitaF2" name="alfabetoNaFitaF2">
 						<button type="button" id="botaoCalcular" class="col-sm-3 btn btn-lg btn-warning">Calular</button>
 					</div>
 				</div>
@@ -58,8 +60,12 @@
 
 				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="saida">
 					<h3><strong><div id="resultado"></div></strong></h3>
-					<label for="fitaCalculada" class="col-xs-6 col-sm-6 col-md-6 col-lg-6  control-label">Fita após a execução</label>
-					<input type="text" class="form-control" id="fitaCalculada" name="fitaCalculada" disabled="">
+					<label for="fitaCalculadaF1" class="col-xs-6 col-sm-6 col-md-6 col-lg-6  control-label">Fita F1 após a execução</label>
+					<input type="text" class="form-control" id="fitaCalculadaF1" name="fitaCalculadaF1" disabled="">
+
+					<label for="fitaCalculadaF2" class="col-xs-6 col-sm-6 col-md-6 col-lg-6  control-label">Fita F2 após a execução</label>
+					<input type="text" class="form-control" id="fitaCalculadaF2" name="fitaCalculadaF2" disabled="">
+
 				</div>
 			</div>
 		</div>
@@ -79,8 +85,10 @@
 		/*global $*/
 
 		$("#botaoCalcular").click(function(e) {
-			maquinaDeTuring.alfabetoNaFita = String($("#alfabetoNaFita").val());
-			maquinaDeTuring.alfabetoNaFita += maquinaDeTuring.simboloVazio;
+			maquinaDeTuring.alfabetoNaFitaF1 = String($("#alfabetoNaFitaF1").val());
+			maquinaDeTuring.alfabetoNaFitaF1 += maquinaDeTuring.simboloVazio;
+			maquinaDeTuring.alfabetoNaFitaF2 = String($("#alfabetoNaFitaF2").val());
+			maquinaDeTuring.alfabetoNaFitaF2 += maquinaDeTuring.simboloVazio;
 			calculaMaquina(maquinaDeTuring);
 		});
 
@@ -104,7 +112,10 @@
 						//console.log(xml);
 						$(xml).find('block').each(function() {
 							var estado = new Estado($(this).attr("id"), $(this).attr("name"));
-							if ($(this).find('initial')[0]) estado.estadoInicial = true;
+							if ($(this).find('initial')[0]) {
+								estado.estadoInicial = true;
+								maquinaDeTuring.estadoInicial = $(this).attr("id");
+							}
 							if ($(this).find('final')[0]) estado.estadoFinal = true;
 							maquinaDeTuring.estados.push(estado);
 						});
@@ -125,19 +136,31 @@
 
 							$(this).find("read").each(function() {
 								if ($(this).attr("tape") === '1') {
-									transicao.lidoNaFitaF1 = $(this).text();
+									var elemento = $(this).text();
+									if (elemento === '') elemento = '□';
+									insereArray(maquinaDeTuring.alfabetoInicial, elemento);
+									transicao.lidoNaFitaF1 = elemento;
 								}
 								if ($(this).attr("tape") === '2') {
-									transicao.lidoNaFitaF2 = $(this).text();
+									var elemento = $(this).text();
+									if (elemento === '') elemento = '□';
+									insereArray(maquinaDeTuring.alfabetoInicial, elemento);
+									transicao.lidoNaFitaF2 = elemento;
 								}
 							});
 
 							$(this).find("write").each(function() {
 								if ($(this).attr("tape") === '1') {
-									transicao.escritoNaFitaF1 = $(this).text();
+									var elemento = $(this).text();
+									if (elemento === '') elemento = '□';
+									insereArray(maquinaDeTuring.alfabetoFinal, elemento);
+									transicao.escritoNaFitaF1 = elemento;
 								}
 								if ($(this).attr("tape") === '2') {
-									transicao.escritoNaFitaF2 = $(this).text();
+									var elemento = $(this).text();
+									if (elemento === '') elemento = '□';
+									insereArray(maquinaDeTuring.alfabetoFinal, elemento);
+									transicao.escritoNaFitaF2 = elemento;
 								}
 							});
 
@@ -177,6 +200,10 @@
 		function setCharAt(str, index, chr) {
 			if (index > str.length - 1) return str;
 			return str.substr(0, index) + chr + str.substr(index + 1);
+		}
+
+		function insereArray(array, elemento) {
+			if (array.indexOf(elemento) === -1) array.push(elemento);
 		}
 
 		$("#maquina").hide();

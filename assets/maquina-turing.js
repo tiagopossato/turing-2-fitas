@@ -4,7 +4,8 @@
 function MaquinaDeTuring() {
     var alfabetoInicial;
     var alfabetoFinal;
-    var alfabetoNaFita;
+    var alfabetoNaFitaF1;
+    var alfabetoNaFitaF2;
     var simboloVazio;
     var estados;
     var estadoInicial;
@@ -12,8 +13,10 @@ function MaquinaDeTuring() {
     this.estados = [];
     this.alfabetoFinal = [];
     this.alfabetoInicial = [];
-    this.alfabetoNaFita = "";
+    this.alfabetoNaFitaF1 = "";
+    this.alfabetoNaFitaF2 = "";
     this.estadoInicial = false;
+    this.simboloVazio ='□';
 
 };
 
@@ -108,7 +111,8 @@ var calculaMaquina = function(mq) {
     }
     console.log("Execução encerrada!");
     // maquinaDeTuring.alfabetoNaFita = maquinaDeTuring.alfabetoNaFita.substr(0, maquinaDeTuring.alfabetoNaFita.length - 1);
-    $("#fitaCalculada").val(maquinaDeTuring.alfabetoNaFita);
+    $("#fitaCalculadaF1").val(maquinaDeTuring.alfabetoNaFitaF1);
+    $("#fitaCalculadaF2").val(maquinaDeTuring.alfabetoNaFitaF2);
     $("#saida").show('slow');
 };
 
@@ -121,9 +125,7 @@ var mostraMaquina = function() {
     var finais = "<strong>F</strong>={";
     for (var i = 0; i < maquinaDeTuring.estados.length; i++) {
         ests += "q" + i + ", ";
-
         if (maquinaDeTuring.estados[i].estadoFinal) finais += "q" + i + ", ";
-
         for (var j = 0; j < maquinaDeTuring.estados[i].transicoes.length; j++) {
             trs += "\t&nbsp;&nbsp;&nbsp;&nbsp;<strong>&delta;</strong>(q" + i + ", \'" + maquinaDeTuring.estados[i].transicoes[j].lidoNaFitaF1 + "\'  |  \'"+ maquinaDeTuring.estados[i].transicoes[j].lidoNaFitaF2+"\') = ";
             trs += "(q" + maquinaDeTuring.estados[i].transicoes[j].proximoEstado + ", \'" +
@@ -143,7 +145,7 @@ var mostraMaquina = function() {
     $("#alfabetoDaFita").html("<strong>&Gamma;</strong> = {" + maquinaDeTuring.alfabetoFinal + "}");
     $("#funcaoTransicao").html(trs);
     $("#estadoInicial").html("<strong>S</strong> = q" + maquinaDeTuring.estadoInicial);
-    $("#branco").html("<strong>&epsilon;</strong> = " + maquinaDeTuring.simboloVazio);
+    $("#branco").html("<strong>&epsilon;</strong> = \'" + maquinaDeTuring.simboloVazio+"\'");
     $("#estadosFinais").html(finais);
 
     $("#entrada").show('slow');
