@@ -68,7 +68,8 @@ function Transicao() {
 
 var maquinaDeTuring;
 var calculaMaquina = function(mq) {
-    var cabecote = 0;
+    var cabecoteF1 = 0;
+    var cabecoteF2 = 0;
     var estadoAtual = mq.estadoInicial;
 
     console.log("Movimentos = {");
