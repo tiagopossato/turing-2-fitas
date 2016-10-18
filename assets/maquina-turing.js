@@ -123,8 +123,8 @@ var calculaMaquina = function() {
         if (!palavraValida) {
             $("#resultado").html(
                 "Nenhuma Transicao encontrada na posicao: F1[" +
-                cabecoteF1 + "], Caracter F1: " + maquinaDeTuring.alfabetoNaFitaF1[cabecoteF1] +
-                " | F2[" + cabecoteF2 + "], Caracter F2: " + maquinaDeTuring.alfabetoNaFitaF2[cabecoteF2]
+                (cabecoteF1-maquinaDeTuring.offSet) + "], Caracter F1: " + maquinaDeTuring.alfabetoNaFitaF1[cabecoteF1] +
+                " | F2[" + (cabecoteF2-maquinaDeTuring.offSet) + "], Caracter F2: " + maquinaDeTuring.alfabetoNaFitaF2[cabecoteF2]
             );
             break;
         }
